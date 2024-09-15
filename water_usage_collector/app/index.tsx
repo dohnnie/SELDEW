@@ -6,17 +6,21 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-let totalWaterUsedImg = '@/assets/images/examplepng.png';
-let waterUsagePatternsImg = '@/assets/images/examplepng.png';
-let avgWaterUsedImg = '@/assets/images/examplepng.png';
+let waterLocationGraph = '@/assets/images/location_grouped.png';
+let userWaterUsage = '@/assets/images/specific_user_usage.png';
+let householdWaterUsage = '@/assets/images/name_grouped.png';
 
-let x = 100;
-let y = 100;
-let z = 100;
+let totalWaterUsed = 100;
+let totalHouseWaterUsed = 100;
+let totalUserWater = 100;
 
-let userName = 'John Doe';
+let avgPersonalUse = 300;
+let totalPersonalUse = 400;
+let areaOfMostUse = 'Leo\'s Bathroom';
 
-function HomeScreen({ navigation }) {
+let userName = 'Leo';
+
+function HomeScreen({}) {
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.welcomeMsg}>
@@ -24,43 +28,56 @@ function HomeScreen({ navigation }) {
           Welcome back {userName}
         </Text>
       </View>
-      <Button
-        title="Go to User List"
-        onPress={() => navigation.navigate('User')}
-      />
       <View style={{
         flex: 1,
       }}>
-        <Image style={styles.imageScale} source={require(totalWaterUsedImg)}/>
-        <Text>Total Water Used: {x}</Text>
+        <Image style={styles.imageScale} source={require(waterLocationGraph)}/>
+        <Text style={styles.caption}>Total Water Used: {totalWaterUsed}</Text>
       </View>
       <View>
-        <Image style={styles.imageScale} source={require(waterUsagePatternsImg)} />
-        <Text>Water Usage Patterns: {y} </Text>
+        <Image style={styles.imageScale} source={require(householdWaterUsage)} />
+        <Text style={styles.caption}>Water Usage Patterns: {totalHouseWaterUsed} </Text>
       </View>
       <View>
-        <Image style={styles.imageScale} source={require(avgWaterUsedImg)} />
-        <Text>Water Usage Patterns: {z} </Text>
+        <Image style={styles.imageScale} source={require(userWaterUsage)} />
+        <Text style={styles.caption}>Water Usage Patterns: {totalUserWater} </Text>
       </View>
     </ScrollView>
   );
 }
 
-function User_List() {
+function User_List({ navigation }) {
   return(
-    <SafeAreaProvider>
-      <View>
-        <Link push href="/user_profile" asChild>
-          <Pressable style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'blue',
-          }}>
-            <Text>User</Text>
-          </Pressable>
-        </Link>
+    <ScrollView style={styles.scrollView}>
+      <View style={styles.userBox}>
+        <View style={{flexDirection: "row", justifyContent: 'space-between'}}>
+          <Text style={styles.userTitle}>{userName}</Text>
+          <Button onPress={ () => navigation.navigate('User Profile')} title='Profile' />
+        </View>
+          <Image style={styles.userImg} source={require(userWaterUsage)} />
       </View>
-    </SafeAreaProvider>
+      <View>
+
+      </View>
+      <View>
+
+      </View>
+    </ScrollView>
+  );
+}
+
+function User() {
+  return (
+    <View style={{flexDirection: 'column'}}>
+      <Text style={{ fontWeight: 'bold', fontSize: 50}}>{userName}</Text>
+      <Image style={{
+        width: 410,
+        height: 300,
+      }} source={require(userWaterUsage)} />
+      <Text>You've used {totalPersonalUse} gallons today!</Text>
+      <Text>You've averaged {avgPersonalUse} gallons this week.</Text>
+      <Text>Most Used Location: {areaOfMostUse} </Text>
+    </View>
   );
 }
 
@@ -72,9 +89,18 @@ function Index() {
         <Stack.Screen 
           name="Home" 
           component={HomeScreen}
-          options={{title: 'Overview'}}
-          />
+          options={ ({ navigation, route }) => ({
+            title: 'Overview',
+            headerRight: () => (
+            <Button
+              onPress={() => navigation.navigate('User')}
+              title='Users'
+            />
+            ),
+          })}
+        />
         <Stack.Screen name="User" component={User_List}/>
+        <Stack.Screen name="User Profile" component={(User)} />
       </Stack.Navigator>
   );
 }
@@ -93,7 +119,7 @@ const styles = StyleSheet.create( {
     justifyContent: 'center',
   },
   imageScale: {
-    width: 300,
+    width: 410,
     height: 300,
     alignContent: 'center',
     justifyContent: 'center',
@@ -105,6 +131,29 @@ const styles = StyleSheet.create( {
     flex: 1,
   },
   caption: {
-
+    alignContent: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    borderBottomWidth: 2,
+  },
+  userBox: {
+    flexDirection: 'column',
+    height: 300,
+    width: 410,
+    borderWidth: 1,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  userTitle: {
+    fontSize: 30,
+    fontWeight: 'bold',
+  },
+  userImg: {
+    height: 390,
+    width: 400,
+    flex: 1,
+    margin: 5,
   }
 });
